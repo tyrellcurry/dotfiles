@@ -21,8 +21,7 @@
   {
     "context": "Workspace",
     "bindings": {
-      "ctrl-\\": "workspace::ToggleLeftDock",
-      "space t": "workspace::ToggleBottomDock"
+      "ctrl-\\": "workspace::ToggleLeftDock"
     }
   },
   {
@@ -36,6 +35,25 @@
     "bindings": {
       "ctrl-l": "pane::ActivateNextItem",
       "ctrl-h": "pane::ActivatePrevItem"
+    }
+  },
+  {
+    "context": "VimControl && !menu",
+    "bindings": {
+      "g s": "outline::Toggle",
+      "g i": "editor::ToggleCodeActions",
+      "g d": "editor::OpenExcerpts",
+      "g c": ["editor::ToggleComments", { "advance_downwards": false }]
+    }
+  },
+  {
+    "context": "Editor && VimControl && !VimWaiting && !menu",
+    "bindings": {
+      "g l": "vim::SelectNext",
+      "g L": "vim::SelectPrevious",
+      "g a": "editor::SelectAllMatches",
+      "g r": "editor::FindAllReferences",
+      "g f": "project_symbols::Toggle"
     }
   },
   {

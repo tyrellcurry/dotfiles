@@ -7,18 +7,25 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "agent": {
+    "default_profile": "ask",
+    "default_model": {
+      "provider": "copilot_chat",
+      "model": "gpt-4.1"
+    }
+  },
   "ui_font_family": "MesloLGL Nerd Font Mono",
   "buffer_font_family": "MesloLGL Nerd Font Mono",
   "relative_line_numbers": true,
   "features": {
     "edit_prediction_provider": "none"
   },
-  "agent": {
-    "default_model": {
-      "provider": "copilot_chat",
-      "model": "claude-3.7-sonnet-thought"
-    }
-  },
+  // "agent": {
+  //   "default_model": {
+  //     "provider": "copilot_chat",
+  //     "model": "claude-3.7-sonnet-thought"
+  //   }
+  // },
   "lsp_document_colors": "inlay",
   "inline_code_actions": false,
   "minimap": {
@@ -62,10 +69,11 @@
   "theme": {
     "mode": "system",
     "light": "One Light",
-    "dark": "Zedokai Darker (Filter Spectrum)"
+    "dark": "Gruvbox Dark Hard"
   },
   "code_actions_on_format": {
     "source.fixAll.eslint": true,
     "source.removeUnusedImports": true
-  }
+  },
+  "soft_wrap": "editor_width"
 }
