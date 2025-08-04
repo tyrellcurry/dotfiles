@@ -34,7 +34,7 @@
     "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
     "bindings": {
       "ctrl-l": "pane::ActivateNextItem",
-      "ctrl-a": "pane::CloseOtherItems",
+      "space w": "pane::CloseOtherItems",
       "ctrl-h": "pane::ActivatePreviousItem"
     }
   },
