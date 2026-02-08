@@ -94,7 +94,7 @@ set smartcase
 nnoremap <C-c> :noh<CR>
 
 " Explorer
-nnoremap \ :CocCommand explorer<CR>
+nnoremap \ :CocCommand explorer --quit-on-open<CR>
 
 " FZF
 nnoremap <leader>sf :FZF<CR>
