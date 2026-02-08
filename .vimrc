@@ -7,13 +7,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'tpope/vim-sensible'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-" Plug 'prabirshrestha/vim-lsp' " async lsp support
-" Plug 'mattn/vim-lsp-settings' " lsp auto-configs
 Plug 'morhetz/gruvbox'
-" Plug 'prabirshrestha/asyncomplete.vim' " async completion
-" Plug 'prabirshrestha/asyncomplete-lsp.vim' " lsp source
-" Plug 'dense-analysis/ale' " Asynchronous Lint Engine (uses vim-lsp)
-" Plug 'sheerun/vim-polyglot' " syntax highlighting for all
 call plug#end()
 
 " Mouse support
@@ -71,7 +65,8 @@ set tabstop=4
 set shiftwidth=4
 set autoindent
 set mouse=a
-set shell=/bin/zsh
+set hidden
+" set shell=/bin/zsh
 " Insert cursor single line
 let &t_SI = "\e[6 q"
 let &t_EI = "\e[2 q"
@@ -91,21 +86,26 @@ let mapleader=" "
 " Highlight search
 set hlsearch
 set incsearch
-
-" Clear highlight search with enter
-nnoremap <CR> :noh<CR>
+" Casing for search
+set ignorecase
+set smartcase
 
 " Clear highlighted search with Ctrl-C
 nnoremap <C-c> :noh<CR>
 
-"Nerdtree Mapping
-nnoremap \ :NERDTreeToggle %<CR>
+" Explorer
+nnoremap \ :CocCommand explorer<CR>
 
-"Open Terminal
-nnoremap <leader>t :below terminal<CR>
-
-"FZF
+" FZF
 nnoremap <leader>sf :FZF<CR>
+" Search for text across all files in the current directory
+nnoremap <leader>sg :Rg<CR>
+" Search for the word currently under the cursor
+nnoremap <leader>sw :Rg <C-R><C-W><CR>
+" Tell FZF to use Ripgrep for its file listing (ignores .gitignore)
+let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --glob "!.git/*"'
+" Make the FZF window look like a popup
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 
 " set highlight to 1000 ms
 let g:highlightedyank_highlight_duration = 150
@@ -131,17 +131,8 @@ function! CheckBackspace() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-" Use <c-space> to trigger completion
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
-
-" Use `[g` and `]g` to navigate diagnostics
-" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
-nmap <silent><nowait> [g <Plug>(coc-diagnostic-prev)
-nmap <silent><nowait> ]g <Plug>(coc-diagnostic-next)
+nmap <silent><nowait> [d <Plug>(coc-diagnostic-prev)
+nmap <silent><nowait> ]d <Plug>(coc-diagnostic-next)
 
 " GoTo code navigation
 nmap <silent><nowait> gd <Plug>(coc-definition)
@@ -167,8 +158,11 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 nmap <leader>rn <Plug>(coc-rename)
 
 " Formatting selected code
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+xmap <leader>fc  <Plug>(coc-format-selected)
+nmap <leader>fc  <Plug>(coc-format-selected)
+
+" Format on save
+" autocmd BufWritePre * call CocAction('format')
 
 augroup mygroup
   autocmd!
@@ -180,13 +174,6 @@ augroup end
 " Example: `<leader>aap` for current paragraph
 xmap <leader>a  <Plug>(coc-codeaction-selected)
 nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap keys for applying code actions at the cursor position
-nmap <leader>ac  <Plug>(coc-codeaction-cursor)
-" Remap keys for apply code actions affect whole buffer
-nmap <leader>as  <Plug>(coc-codeaction-source)
-" Apply the most preferred quickfix action to fix diagnostic on the current line
-nmap <leader>qf  <Plug>(coc-fix-current)
 
 " Remap keys for applying refactor code actions
 nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
@@ -217,11 +204,6 @@ if has('nvim-0.4.0') || has('patch-8.2.0750')
   vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 endif
 
-" Use CTRL-S for selections ranges
-" Requires 'textDocument/selectionRange' support of language server
-nmap <silent> <C-s> <Plug>(coc-range-select)
-xmap <silent> <C-s> <Plug>(coc-range-select)
-
 " Add `:Format` command to format current buffer
 command! -nargs=0 Format :call CocActionAsync('format')
 
@@ -234,25 +216,17 @@ command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.org
 " Add (Neo)Vim's native statusline support
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+set statusline=%f\ %{coc#status()}%{get(b:,'coc_current_function','')}
 
-" Mappings for CoCList
 " Show all diagnostics
-nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions
-nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document
-nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols
-nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item
-nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item
-nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list
-nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+nnoremap <silent><nowait> <space>x  :<C-u>CocDiagnostics<cr>
 
 "Clang
 set makeprg=clang-tidy\ %
+
+" Store all swap files in a central location
+set directory=~/.vim/swaps//
+" Create the directory if it doesn't exist
+if !isdirectory($HOME . "/.vim/swaps")
+    call mkdir($HOME . "/.vim/swaps", "p", 0700)
+endif
