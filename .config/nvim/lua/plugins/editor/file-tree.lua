@@ -35,7 +35,7 @@ return {
         },
       },
       update_focused_file = {
-        enable = false,
+        enable = true,
       },
       view = {
         centralize_selection = true,
@@ -59,7 +59,7 @@ return {
         no_buffer = false,
       },
       git = {
-        enable = true,
+        enable = false,
         ignore = false,
         timeout = 400,
       },
