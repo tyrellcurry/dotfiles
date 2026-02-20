@@ -1,9 +1,7 @@
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
+vim.schedule(function()
+  require("options")
+  require("keymaps")
+end)
 
-vim.g.have_nerd_font = true
-
-require 'globals'
-require 'options'
-require 'keymaps'
-require 'lazy-init'
+require("options_pre")
+require("configs.lazy")

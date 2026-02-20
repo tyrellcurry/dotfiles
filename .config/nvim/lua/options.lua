@@ -1,60 +1,45 @@
--- Disable command line
-vim.opt.cmdheight = 0
+local o = vim.o
+local opt = vim.opt
+local diagnostic = vim.diagnostic
+local sev = diagnostic.severity
 
--- Make line numbers default
-vim.opt.number = true
+-- editor options
+o.confirm = true
+o.expandtab = true
+o.foldlevel = 99
+o.foldmethod = "expr"
+o.foldtext = ""
+o.shiftwidth = 2
+o.softtabstop = 2
+o.tabstop = 2
+o.ignorecase = true
+o.smartcase = true
+opt.listchars = { tab = " ‥", trail = "-", nbsp = "␣", eol = "↲", space = "·", extends = "»", precedes = "«" }
+o.mouse = "a"
+o.scrolloff = 5
+o.smartindent = true
+o.splitbelow = true
+o.splitright = true
+o.undofile = true
+o.whichwrap = "b,s,<,>,[,]"
+o.wrap = false
 
--- Relative numbers
-vim.opt.relativenumber = true
+-- diagnostic options
+diagnostic.config({
+  float = { border = "rounded" },
+  signs = { text = { [sev.ERROR] = "󰅚", [sev.WARN] = "󰀪", [sev.INFO] = "󰋽", [sev.HINT] = "󰌶" } },
+  virtual_text = true,
+})
 
--- Disable wrap
-vim.wo.wrap = false
-
--- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = 'a'
-
--- Don't show the mode, since it's already in the status line
-vim.opt.showmode = false
-
--- Sync clipboard between OS and Neovim.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
-vim.opt.clipboard = 'unnamedplus'
-
--- Enable break indent
-vim.opt.breakindent = true
-
--- Save undo history
-vim.opt.undofile = true
-
--- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-
--- Keep signcolumn on by default
-vim.opt.signcolumn = 'yes'
-
--- Decrease update time
-vim.opt.updatetime = 250
-
--- Decrease mapped sequence wait time
-vim.opt.timeoutlen = 300
-
--- Configure how new splits should be opened
-vim.opt.splitright = true
-vim.opt.splitbelow = true
-
--- Sets how neovim will display certain whitespace characters in the editor.
---  See `:help 'list'`
---  and `:help 'listchars'`
-vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-
--- Preview substitutions live, as you type!
-vim.opt.inccommand = 'split'
-
--- Show which line your cursor is on
-vim.opt.cursorline = false
-
--- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 10
+-- clipboard
+vim.g.clipboard = {
+  name = "OSC 52",
+  copy = {
+    ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+    ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+  },
+  paste = {
+    ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+    ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+  },
+}
