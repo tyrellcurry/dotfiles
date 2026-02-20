@@ -1,232 +1,230 @@
-"PLUG
-call plug#begin()
-
-" List your plugins here
+" ===========================================
+" PLUGINS
+" ===========================================
+call plug#begin('~/.vim/plugged')
+" Highlight yanked
 Plug 'machakann/vim-highlightedyank'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'tpope/vim-sensible'
+" Gruvbox colorscheme
+Plug 'morhetz/gruvbox'
+
+" File management
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'morhetz/gruvbox'
-call plug#end()
+Plug 'preservim/nerdtree'
 
-" Mouse support
-set mouse=a
-set ttymouse=sgr
-set balloonevalterm
-" Styled and colored underline support
-let &t_AU = "\e[58:5:%dm"
-let &t_8u = "\e[58:2:%lu:%lu:%lum"
-let &t_Us = "\e[4:2m"
-let &t_Cs = "\e[4:3m"
-let &t_ds = "\e[4:4m"
-let &t_Ds = "\e[4:5m"
-let &t_Ce = "\e[4:0m"
-" Strikethrough
-let &t_Ts = "\e[9m"
-let &t_Te = "\e[29m"
-" Truecolor support
-let &t_8f = "\e[38:2:%lu:%lu:%lum"
-let &t_8b = "\e[48:2:%lu:%lu:%lum"
-let &t_RF = "\e]10;?\e\\"
-let &t_RB = "\e]11;?\e\\"
-" Bracketed paste
-let &t_BE = "\e[?2004h"
-let &t_BD = "\e[?2004l"
-let &t_PS = "\e[200~"
-let &t_PE = "\e[201~"
-" Cursor control
-let &t_RC = "\e[?12$p"
-let &t_SH = "\e[%d q"
-let &t_RS = "\eP$q q\e\\"
-let &t_SI = "\e[5 q"
-let &t_SR = "\e[3 q"
-let &t_EI = "\e[1 q"
-let &t_VS = "\e[?12l"
-" Focus tracking
-let &t_fe = "\e[?1004h"
-let &t_fd = "\e[?1004l"
-execute "set <FocusGained>=\<Esc>[I"
-execute "set <FocusLost>=\<Esc>[O"
-" Window title
-let &t_ST = "\e[22;2t"
-let &t_RT = "\e[23;2t"
+" Linting & Formatting
+Plug 'dense-analysis/ale'
 
-" vim hardcodes background color erase even if the terminfo file does
-" not contain bce. This causes incorrect background rendering when
-" using a color theme with a background color in terminals such as
-" kitty that do not support background color erase.
-let &t_ut=''
+" Git integration
+Plug 'tpope/vim-fugitive'
 
-"Base config
+" Auto-pairs for brackets
+Plug 'jiangmiao/auto-pairs'
+
+call plug#end() 
+
+" ===========================================
+" BASE EDITOR SETTINGS
+" ===========================================
+" Display line numbers (absolute)
 set number
+" Display line numbers relative to current line
 set relativenumber
+" Number of spaces a <Tab> character displays as
 set tabstop=4
+" Number of spaces to use for each autoindent step
 set shiftwidth=4
+" Copy indent from current line when starting a new line
 set autoindent
+" Enable mouse support in all modes
 set mouse=a
+" Allow switching buffers without saving
 set hidden
-" set shell=/bin/zsh
-" Insert cursor single line
+" Path for searching
+set path+=**
+" Enable wildmenu for command completion
+set wildmenu
+
+" ===========================================
+" CURSOR APPEARANCE
+" ===========================================
+" Set cursor to vertical bar in insert mode
 let &t_SI = "\e[6 q"
+" Set cursor to block in normal mode
 let &t_EI = "\e[2 q"
+" Enable timeout for key codes
 set ttimeout
+" Time in ms to wait for a key code sequence (minimal delay)
 set ttimeoutlen=1
+" Indicates a fast terminal connection
 set ttyfast
+" Disable all bell sounds
 set belloff=all
-"Syntax colors
+
+" ===========================================
+" VISUAL SETTINGS
+" ===========================================
+" Enable syntax highlighting
 syntax on
-" Colorscheme
+" Enable 256 color support
 set t_Co=256
+" Set dark background mode
 set background=dark
-colo gruvbox" 
-" Remap leader to space
-nnoremap <SPACE> <Nop>
-let mapleader=" "
-" Highlight search
-set hlsearch
-set incsearch
-" Casing for search
-set ignorecase
-set smartcase
-
-" Clear highlighted search with Ctrl-C
-nnoremap <C-c> :noh<CR>
-
-" Explorer
-nnoremap \ :CocCommand explorer --quit-on-open<CR>
-
-" FZF
-nnoremap <leader>sf :FZF<CR>
-" Search for text across all files in the current directory
-nnoremap <leader>sg :Rg<CR>
-" Search for the word currently under the cursor
-nnoremap <leader>sw :Rg <C-R><C-W><CR>
-" Tell FZF to use Ripgrep for its file listing (ignores .gitignore)
-let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --glob "!.git/*"'
-" Make the FZF window look like a popup
-let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
-
-" set highlight to 1000 ms
+" Set colorscheme to gruvbox
+colo gruvbox
+" set highlight to 150 ms
 let g:highlightedyank_highlight_duration = 150
 
-" Use tab for trigger completion with characters ahead and navigate
-" NOTE: There's always complete item selected by default, you may want to enable
-" no select by `"suggest.noselect": true` in your configuration file
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config
-inoremap <silent><expr> <TAB>
-      \ coc#pum#visible() ? coc#pum#next(1) :
-      \ CheckBackspace() ? "\<Tab>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+" ===========================================
+" LEADER KEY
+" ===========================================
+" Disable default space behavior
+nnoremap <SPACE> <Nop>
+" Remap leader key to space
+let mapleader=" "
+" Set timeout for leader key sequences
+set timeout
+set timeoutlen=1000
 
-" Make <CR> to accept selected completion item or notify coc.nvim to format
-" <C-g>u breaks current undo, please make your own choice
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+" ===========================================
+" SEARCH SETTINGS
+" ===========================================
+" Highlight all search matches
+set hlsearch
+" Show matches as you type
+set incsearch
+" Case-insensitive search by default
+set ignorecase
+" Override ignorecase if search contains uppercase
+set smartcase
+" Clear search highlighting with Ctrl-C
+nnoremap <C-c> :noh<CR>
 
-function! CheckBackspace() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
+" ===========================================
+" FZF SETTINGS
+" ===========================================
+" Fuzzy find files
+nnoremap <Leader>sf :Files<CR>
+" Switch between buffers
+nnoremap <C-b> :Buffers<CR>
+" Search file contents (requires ripgrep)
+nnoremap <Leader>sg :Rg<CR>
+" Search git files
+nnoremap <Leader>gf :GFiles<CR>
 
-nmap <silent><nowait> [d <Plug>(coc-diagnostic-prev)
-nmap <silent><nowait> ]d <Plug>(coc-diagnostic-next)
+" Use ripgrep for file finding (respects .gitignore)
+let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
 
-" GoTo code navigation
-nmap <silent><nowait> gd <Plug>(coc-definition)
-nmap <silent><nowait> gy <Plug>(coc-type-definition)
-nmap <silent><nowait> gi <Plug>(coc-implementation)
-nmap <silent><nowait> gr <Plug>(coc-references)
+" Files command with preview window
+command! -bang -nargs=? -complete=dir Files
+    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
-" Use K to show documentation in preview window
-nnoremap <silent> K :call ShowDocumentation()<CR>
+" Rg command with preview window
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
 
-function! ShowDocumentation()
-  if CocAction('hasProvider', 'hover')
-    call CocActionAsync('doHover')
-  else
-    call feedkeys('K', 'in')
-  endif
-endfunction
+" ===========================================
+" NERDTREE SETTINGS
+" ===========================================
+" Toggle NERDTree
+nnoremap <C-\> :NERDTreeToggle<CR>
+" Find current file in NERDTree
+nnoremap <C-f> :NERDTreeFind<CR>
+" Show hidden files
+let NERDTreeShowHidden=1
+" Ignore certain files/folders
+let NERDTreeIgnore=[
+\   '\.git$[[dir]]',
+\   'CMakeCache.txt$',
+\   '\.cmake$'
+\]
+" Close vim if NERDTree is the only window left
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
-" Highlight the symbol and its references when holding the cursor
-autocmd CursorHold * silent call CocActionAsync('highlight')
+" ===========================================
+" ALE SETTINGS (LINTING)
+" ===========================================
+" Configure linters for C
+let g:ale_linters = {
+\   'c': ['gcc', 'cppcheck'],
+\}
 
-" Symbol renaming
-nmap <leader>rn <Plug>(coc-rename)
+" Configure fixers for C
+let g:ale_fixers = {
+\   'c': ['clang-format'],
+\}
 
-" Formatting selected code
-xmap <leader>fc  <Plug>(coc-format-selected)
-nmap <leader>fc  <Plug>(coc-format-selected)
+" Auto-format on save
+let g:ale_fix_on_save = 1
 
-" Format on save
-" autocmd BufWritePre * call CocAction('format')
+" Use compile_commands.json if it exists
+let g:ale_c_parse_compile_commands = 1
 
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s)
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-augroup end
+" Lint only on save (not while typing)
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 0
+let g:ale_lint_on_save = 1
 
-" Applying code actions to the selected code block
-" Example: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
+" Custom compiler flags
+let g:ale_c_gcc_options = '-Wall -Wextra -Wpedantic -std=c99 -I./include'
+let g:ale_c_cppcheck_options = '--enable=warning,style,performance,portability'
 
-" Remap keys for applying refactor code actions
-nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
-xmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
-nmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
+" Error navigation
+nmap <silent> [d <Plug>(ale_previous_wrap)
+nmap <silent> ]d <Plug>(ale_next_wrap)
 
-" Run the Code Lens action on the current line
-nmap <leader>cl  <Plug>(coc-codelens-action)
+" Show error details
+nmap <silent> <Leader>x :ALEDetail<CR>
 
-" Map function and class text objects
-" NOTE: Requires 'textDocument.documentSymbol' support from the language server
-xmap if <Plug>(coc-funcobj-i)
-omap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap af <Plug>(coc-funcobj-a)
-xmap ic <Plug>(coc-classobj-i)
-omap ic <Plug>(coc-classobj-i)
-xmap ac <Plug>(coc-classobj-a)
-omap ac <Plug>(coc-classobj-a)
+" ===========================================
+" VIM-FUGITIVE SETTINGS
+" ===========================================
+" Git status
+nnoremap <Leader>gs :Git<CR>
+" Git commit
+nnoremap <Leader>gc :Git commit<CR>
+" Git push
+nnoremap <Leader>gp :Git push<CR>
+" Git pull
+nnoremap <Leader>gl :Git pull<CR>
+" Git diff
+nnoremap <Leader>gd :Gdiffsplit<CR>
+" Git blame
+nnoremap <Leader>gb :Git blame<CR>
+" Git log
+nnoremap <Leader>glog :Git log<CR>
 
-" Remap <C-f> and <C-b> to scroll float windows/popups
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
-
-" Add `:Format` command to format current buffer
-command! -nargs=0 Format :call CocActionAsync('format')
-
-" Add `:Fold` command to fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-
-" Add `:OR` command for organize imports of the current buffer
-command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
-
-" Add (Neo)Vim's native statusline support
-" NOTE: Please see `:h coc-status` for integrations with external plugins that
-" provide custom statusline: lightline.vim, vim-airline
-set statusline=%f\ %{coc#status()}%{get(b:,'coc_current_function','')}
-
-" Show all diagnostics
-nnoremap <silent><nowait> <space>x  :<C-u>CocDiagnostics<cr>
-
-"Clang
-set makeprg=clang-tidy\ %
-
+" ===========================================
+" FUNCTIONS
+" ===========================================
 " Store all swap files in a central location
 set directory=~/.vim/swaps//
 " Create the directory if it doesn't exist
 if !isdirectory($HOME . "/.vim/swaps")
     call mkdir($HOME . "/.vim/swaps", "p", 0700)
 endif
+
+" ===========================================
+" CUSTOM
+" ===========================================
+" Open terminal
+nnoremap <leader>tr :set splitright \| vertical term<CR>
+
+function! OscCopy()
+  let encodedText=@"
+  let encodedText=substitute(encodedText, '\', '\\\\', "g")
+  let encodedText=substitute(encodedText, "'", "'\\\\'", "g")
+  let executeCmd="echo -n '".encodedText."' | base64 | tr -d '\\n'"
+  let encodedText=system(executeCmd)
+  if $TMUX != ""
+    "tmux
+    let executeCmd='echo -en "\x1bPtmux;\x1b\x1b]52;;'.encodedText.'\x1b\x1b\\\\\x1b\\" > /dev/tty'
+  else
+    let executeCmd='echo -en "\x1b]52;;'.encodedText.'\x1b\\" > /dev/tty'
+  endif
+  call system(executeCmd)
+  redraw!
+endfunction
+nnoremap <leader>y :call OscCopy()<CR>
